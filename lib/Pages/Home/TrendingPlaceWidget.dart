@@ -5,12 +5,14 @@ class TrendingPlaceWidget extends StatelessWidget {
   final Place place;
   final Key imageHeroTag;
   final Function? onPressed;
+  final double? height;
 
   TrendingPlaceWidget({
     Key? key,
     required this.place,
     required this.imageHeroTag,
     this.onPressed,
+    this.height,
   }) : super(key: key);
 
   @override
@@ -18,7 +20,7 @@ class TrendingPlaceWidget extends StatelessWidget {
     var borderRadius = 20.0;
 
     return Ink(
-      // padding: EdgeInsets.all(5),
+      height: this.height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius),
         color: Colors.grey.shade200,

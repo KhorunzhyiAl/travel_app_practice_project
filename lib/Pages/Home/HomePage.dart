@@ -1,47 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:travel_app/Pages/Home/ListLabel.dart';
 import 'package:travel_app/Pages/Home/RecommendedPlaceWidget.dart';
 import 'package:travel_app/Pages/Home/TrendingPlaceWidget.dart';
+import 'package:travel_app/Api/Data.dart';
+import 'package:travel_app/Pages/PlaceDetailsPage/PlacePage.dart';
 import 'package:travel_app/Api/Place.dart';
-import 'package:travel_app/Pages/PlaceDetails/PlacePage.dart';
 
 class HomePage extends StatelessWidget {
-  final recommendations = <Place>[
-    Place(
-      city: 'Venice',
-      country: 'Italy',
-      imageUrl: 'https://wallpaperaccess.com/full/3150434.jpg',
-    ),
-    Place(
-      city: 'New York',
-      country: 'USA',
-      imageUrl:
-          'https://i.pinimg.com/originals/e5/2e/90/e52e90e44c10ed94daa14174ebc2ed02.jpg',
-    ),
-    Place(
-      city: 'Idk',
-      country: 'Iceland',
-      imageUrl: 'https://wallpaperaccess.com/full/202797.jpg',
-    ),
-  ];
-
-  final trending = <Place>[
-    Place(
-      city: 'idk',
-      country: 'Iceland',
-      imageUrl: 'https://wallpaperaccess.com/full/202797.jpg',
-    ),
-    Place(
-      city: 'Venice',
-      country: 'Italy',
-      imageUrl: 'https://wallpaperaccess.com/full/3150434.jpg',
-    ),
-    Place(
-      city: 'New York',
-      country: 'USA',
-      imageUrl:
-          'https://i.pinimg.com/originals/e5/2e/90/e52e90e44c10ed94daa14174ebc2ed02.jpg',
-    ),
-  ];
+  void openPlacePage(Place place, Key imageHeroTag, BuildContext context) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, _, __) {
+          return PlacePage(
+            place: place,
+            imageHeroTag: imageHeroTag,
+          );
+        },
+        transitionsBuilder: (context, animation, __, child) {
+          return FadeTransition(
+            opacity: animation,
+            child: child,
+          );
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,148 +108,72 @@ class HomePage extends StatelessWidget {
             ),
           ),
 
+          SizedBox(height: 30),
           // Recommendations
           Expanded(
-            child: Container(
-              child: Column(
-                children: [
-                  // Recommended label
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 30),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          'Recommended',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: Icon(Icons.more_horiz),
-                          color: Colors.grey.shade600,
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Recommended list
-                  Expanded(
-                    child: ListView.separated(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 30),
-                      clipBehavior: Clip.none,
-                      scrollDirection: Axis.horizontal,
-                      cacheExtent: 100,
-                      itemBuilder: (_, index) {
-                        Key heroTag = UniqueKey();
-                        return RecommendedPlaceWidget(
-                          place: recommendations[index],
-                          imageHeroTag: heroTag,
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              PageRouteBuilder(
-                                pageBuilder: (context, _, __) {
-                                  return PlacePage(
-                                    place: recommendations[index],
-                                    imageHeroTag: heroTag,
-                                  );
-                                },
-                                transitionsBuilder:
-                                    (context, animation, __, child) {
-                                  return FadeTransition(
-                                    opacity: animation,
-                                    child: child,
-                                  );
-                                },
-                              ),
-                            );
-                          },
-                        );
-                      },
-                      separatorBuilder: (_, __) {
-                        return SizedBox.fromSize(size: Size.fromWidth(30));
-                      },
-                      itemCount: recommendations.length,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // Trending
-          Container(
             child: Column(
               children: [
-                // Label
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 30),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        'Trending this week',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.more_horiz),
-                        color: Colors.grey.shade600,
-                      ),
-                    ],
-                  ),
-                ),
+                // Recommended label
+                ListLabel(labelText: 'Recommended'),
 
-                // List
-                Container(
-                  height: 100,
+                // Recommended list
+                Expanded(
                   child: ListView.separated(
                     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+                    clipBehavior: Clip.none,
                     scrollDirection: Axis.horizontal,
+                    cacheExtent: 100,
                     itemBuilder: (_, index) {
                       Key imageHeroTag = UniqueKey();
-                      return TrendingPlaceWidget(
-                        place: trending[index],
+                      return RecommendedPlaceWidget(
+                        place: Data.recommendations[index],
                         imageHeroTag: imageHeroTag,
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                              pageBuilder: (context, _, __) {
-                                return PlacePage(
-                                  place: recommendations[index],
-                                  imageHeroTag: imageHeroTag,
-                                );
-                              },
-                              transitionsBuilder:
-                                  (context, animation, __, child) {
-                                return FadeTransition(
-                                  opacity: animation,
-                                  child: child,
-                                );
-                              },
-                            ),
-                          );
+                          openPlacePage(Data.trending[index], imageHeroTag, context);
                         },
                       );
                     },
                     separatorBuilder: (_, __) {
                       return SizedBox.fromSize(size: Size.fromWidth(30));
                     },
-                    itemCount: trending.length,
+                    itemCount: Data.recommendations.length,
                   ),
                 ),
               ],
             ),
+          ),
+
+          SizedBox(height: 30),
+          // Trending
+          Column(
+            children: [
+              ListLabel(
+                labelText: 'Trending this week',
+              ),
+
+              // List
+              Container(
+                height: 100,
+                child: ListView.separated(
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (_, index) {
+                    Key imageHeroTag = UniqueKey();
+                    return TrendingPlaceWidget(
+                      place: Data.trending[index],
+                      imageHeroTag: imageHeroTag,
+                      onPressed: () {
+                        openPlacePage(Data.trending[index], imageHeroTag, context);
+                      },
+                    );
+                  },
+                  separatorBuilder: (_, __) {
+                    return SizedBox.fromSize(size: Size.fromWidth(30));
+                  },
+                  itemCount: Data.trending.length,
+                ),
+              ),
+            ],
           ),
         ],
       ),

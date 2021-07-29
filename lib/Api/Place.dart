@@ -4,7 +4,7 @@ class Place {
   final String city;
   final String description;
 
-  Place({
+  const Place({
     required this.country,
     required this.city,
     required this.imageUrl,
