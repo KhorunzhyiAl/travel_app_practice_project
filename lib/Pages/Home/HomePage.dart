@@ -5,6 +5,8 @@ import 'package:travel_app/Pages/Home/TrendingPlaceWidget.dart';
 import 'package:travel_app/Api/Data.dart';
 import 'package:travel_app/Pages/PlaceDetailsPage/PlacePage.dart';
 import 'package:travel_app/Api/Place.dart';
+import 'package:travel_app/MyWidgets/SearchBar.dart';
+import 'package:travel_app/Pages/SearchBarPage.dart';
 
 class HomePage extends StatelessWidget {
   void openPlacePage(Place place, Key imageHeroTag, BuildContext context) {
@@ -27,9 +29,27 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  void openSearchPage(BuildContext context, Key searchBarTag) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, _, __) {
+          return SearchBarPage(
+            searchBarTag: searchBarTag,
+          );
+        },
+        transitionDuration: Duration(milliseconds: 300),
+        opaque: false,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    var searchBarTag = UniqueKey();
+
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         elevation: 0,
         toolbarHeight: 80,
@@ -82,28 +102,19 @@ class HomePage extends StatelessWidget {
           ),
 
           // Search bar
+          SizedBox(height: 30),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 30),
-            child: Container(
-              height: 45,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade200,
-                borderRadius: BorderRadius.all(Radius.circular(30)),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox.fromSize(size: Size.fromWidth(15)),
-                  Icon(Icons.manage_search, color: Colors.grey.shade600),
-                  SizedBox.fromSize(size: Size.fromWidth(15)),
-                  Text(
-                    'Search...',
-                    style: TextStyle(
-                      color: Colors.grey.shade600,
-                      fontSize: 20,
-                    ),
-                  ),
-                ],
+            child: Hero(
+              tag: searchBarTag,
+              child: Material(
+                color: Colors.transparent,
+                child: SearchBar(
+                  onSelected: () {
+                    openSearchPage(context, searchBarTag);
+                  },
+                  readonly: true,
+                ),
               ),
             ),
           ),
@@ -129,7 +140,8 @@ class HomePage extends StatelessWidget {
                         place: Data.recommendations[index],
                         imageHeroTag: imageHeroTag,
                         onPressed: () {
-                          openPlacePage(Data.trending[index], imageHeroTag, context);
+                          openPlacePage(
+                              Data.trending[index], imageHeroTag, context);
                         },
                       );
                     },
@@ -163,7 +175,8 @@ class HomePage extends StatelessWidget {
                       place: Data.trending[index],
                       imageHeroTag: imageHeroTag,
                       onPressed: () {
-                        openPlacePage(Data.trending[index], imageHeroTag, context);
+                        openPlacePage(
+                            Data.trending[index], imageHeroTag, context);
                       },
                     );
                   },
